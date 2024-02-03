@@ -1,0 +1,11 @@
+---
+name: TestPlugin
+main: venndev\plugin\Loader
+version: 1.0
+api: [5.0.0]
+author: VennDev
+description: One plugin for my friends for new year :))
+loadbefore:
+  - VItemsAPI
+load: POSTWORLD
+...
