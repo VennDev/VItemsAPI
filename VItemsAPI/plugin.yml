@@ -1,9 +1,0 @@
----
-name: VItemsAPI
-main: venndev\plugin\VItemsAPI
-version: 1.0
-api: [5.0.0]
-author: VennDev
-description: One plugin for my friends for new year :))
-load: STARTUP
-...
