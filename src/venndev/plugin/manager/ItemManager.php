@@ -94,6 +94,7 @@ final class ItemManager
         if ($item instanceof Durable) $item->setUnbreakable($vitem->unbreakable());
 
         $item->getNamedTag()->setString(self::HEAD_TAG, $vitem->getRecipeName());
+        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::DAMAGE, $vitem->getDamage());
         $item->getNamedTag()->setFloat(self::HEAD_TAG . self::STRENGTH, $vitem->getStrength());
         $item->getNamedTag()->setFloat(self::HEAD_TAG . self::DEFENSE, $vitem->getDefense());
         $item->getNamedTag()->setFloat(self::HEAD_TAG . self::HEALTH, $vitem->getHealth());

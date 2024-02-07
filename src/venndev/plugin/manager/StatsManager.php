@@ -2,6 +2,9 @@
 
 namespace venndev\plugin\manager;
 
+use pocketmine\entity\effect\EffectInstance;
+use pocketmine\entity\effect\StringToEffectParser;
+use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\Item;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
@@ -18,6 +21,9 @@ final class StatsManager
     public const float BASIC_MANA_REGEN = 0.5;
     public const float MAX_FORTUNE = 600;
     public const float MAX_BONUS_ATTACK_SPEED = 100;
+    public const float DEFAULT_ATTACK_SPEED = 10;
+
+    public const string DEFAULT_ATTACK_SPEED_TAG = "default_attack_speed";
 
     private static array $baseStats = [
         self::DAMAGE => 0,
@@ -42,7 +48,8 @@ final class StatsManager
         self::ARROW_DAMAGE => 0,
         self::ARROW_PIERCING => 0,
         self::FEROCITY => 0,
-        self::CROP_FORTUNE => 0
+        self::CROP_FORTUNE => 0,
+        self::DEFAULT_ATTACK_SPEED_TAG => self::DEFAULT_ATTACK_SPEED
     ];
 
     private static array $statsHandler = [];
@@ -99,12 +106,34 @@ final class StatsManager
         self::$manaHandler[$this->player->getName()] = $amount;
     }
 
+    public function getStatsHandler() : array
+    {
+        return self::$statsHandler[$this->player->getName()];
+    }
+
+    public function setStatHandler(string $stat, float $amount) : void
+    {
+        self::$statsHandler[$this->player->getName()][$stat] = $amount;
+    }
+
     public function getTotalStat(string $stat) : float
     {
         return self::$statsHandler[$this->player->getName()][$stat] + self::$itemStatsHandler[$this->player->getName()][$stat];
     }
 
-    public function getDamageDealt() : float
+    /**
+     * This function will calculate the damage dealt by the player.
+     * The damage dealt is based on the base damage, critical chance, critical damage and strength stats.
+     * The damage dealt is calculated by the formula:
+     *      Damage Dealt = (5 + Base Damage) * (1 + (Strength / 100))
+     * If the player has a critical chance, the damage dealt will be multiplied by the critical damage.
+     * The critical chance is based on the critical chance stat.
+     * The critical damage is based on the critical damage stat.
+     * The strength is based on the strength stat.
+     *
+     * @return object<"damage" => float, "hasCrit" => bool>
+     */
+    public function getDamageDealt() : object
     {
         $baseDamage = $this->getTotalStat(self::DAMAGE);
         $criticalChance = $this->getTotalStat(self::CRITICAL_CHANCE);
@@ -113,8 +142,16 @@ final class StatsManager
 
         $damageDealt = (5 + $baseDamage) * (1 + ($strength / 100));
 
-        if (mt_rand(0, 100) <= $criticalChance) $damageDealt *= (1 + ($criticalDamage / 100));
-        return $damageDealt;
+        $hasCritical = false;
+        if (mt_rand(0, 100) <= $criticalChance) {
+            $damageDealt *= (1 + ($criticalDamage / 100));
+            $hasCritical = true;
+        }
+
+        return (object) [
+            "damage" => $damageDealt,
+            "hasCrit" => $hasCritical
+        ];
     }
 
     public function getAbilityDamage(float $abilityScaling) : float
@@ -304,7 +341,24 @@ final class StatsManager
 
     public function calculateAttackSpeed(int|float $baseSpeed) : float
     {
-        return $baseSpeed - ($baseSpeed /  (1 + min(self::MAX_BONUS_ATTACK_SPEED, $this->getTotalStat(self::BONUS_ATTACK_SPEED))));
+        $totalAttackSpeed = $this->getTotalStat(self::BONUS_ATTACK_SPEED);
+
+        // This is the player's effect when player decrease the attack speed
+        $playerEffect = $this->player->getEffects();
+        $lvlEffect = (int) (($baseSpeed + ($baseSpeed * abs($totalAttackSpeed) / 100)) / 2);
+
+        $effect = StringToEffectParser::getInstance()->parse("mining_fatigue");
+        $effectInstance = new EffectInstance($effect, 200, $lvlEffect, false);
+
+        // If the player has a negative attack speed, we will increase the attack speed
+        if ($totalAttackSpeed >= 0) {
+            $playerEffect->get($effect) !== null ?? $playerEffect->get($effect)->setDuration(0);
+            return $baseSpeed - ($baseSpeed /  (1 + min(self::MAX_BONUS_ATTACK_SPEED, $totalAttackSpeed)));
+        }
+
+        $playerEffect->get($effect) !== null ? $playerEffect->get($effect)->setAmplifier($lvlEffect) : $playerEffect->add($effectInstance);
+
+        return $baseSpeed + ($baseSpeed * abs($totalAttackSpeed) / 100);
     }
 
 }

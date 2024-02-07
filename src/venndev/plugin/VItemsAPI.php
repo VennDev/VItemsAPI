@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace venndev\plugin;
 
+use pocketmine\block\tile\TileFactory;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use vennv\vapm\VapmPMMP;

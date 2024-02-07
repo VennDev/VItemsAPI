@@ -19,11 +19,6 @@ abstract class BaseItem
 
     abstract public function getLore() : array;
 
-    public function getDamage() : float
-    {
-        return 0;
-    }
-
     public function getDefense() : float
     {
         return 0;
@@ -134,46 +129,75 @@ abstract class BaseItem
         return 0;
     }
 
+    public function getDamage() : float
+    {
+        return 0;
+    }
+
     public function unbreakable() : bool
     {
         return false;
     }
 
+    /**
+     * This is method is called when the item is used
+     */
     public function onUse(Entity $owner) : void
     {
         //TODO: Implement
     }
 
+    /**
+     * This is method is called when the item is used on another entity
+     */
     public function onHit(Entity $owner) : void
     {
         //TODO: Implement
     }
 
+    /**
+     * This is method is called when owner is hit by another entity
+     */
     public function onHitBy(Entity $owner, Entity $entity) : void
     {
         //TODO: Implement
     }
 
+    /**
+     * This is method is called when the item is used on a block
+     */
     public function onClickBlock(Entity $owner, ClickMode $mode) : void
     {
         //TODO: Implement
     }
 
+    /**
+     * This is method is called when the item is used to break a block
+     */
     public function onBreakBlock(Entity $owner) : void
     {
         //TODO: Implement
     }
 
+    /**
+     * This is method is called when the item is held
+     */
     public function onHeld(Entity $owner) : void
     {
         //TODO: Implement
     }
 
+    /**
+     * This is method is called when the item is equipped in inventory anywhere (armor, hot bar, etc.)
+     */
     public function onTick(Entity $owner) : void
     {
         //TODO: Implement
     }
 
+    /**
+     * This is method is called when the item is equipped in armor slot or hot bar
+     */
     public function onConsume(Entity $owner) : void
     {
         //TODO: Implement
