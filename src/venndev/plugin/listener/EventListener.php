@@ -44,6 +44,9 @@ final class EventListener implements Listener
     use StatsItem;
     use ParticlesAbility;
 
+    /**
+     * @priority HIGH
+     */
     public function onPlayerJoinEvent(PlayerJoinEvent $event) : void
     {
         $player = $event->getPlayer();
@@ -51,6 +54,9 @@ final class EventListener implements Listener
         $statsManager->setHasJoined(true);
     }
 
+    /**
+     * @priority HIGH
+     */
     public function onPlayerQuitEvent(PlayerQuitEvent $event) : void
     {
         $player = $event->getPlayer();
@@ -62,6 +68,9 @@ final class EventListener implements Listener
         $statsManager->setHasJoined(false);
     }
 
+    /**
+     * @priority HIGH
+     */
     public function onBlockBreak(BlockBreakEvent $event) : void
     {
         $player = $event->getPlayer();
@@ -82,6 +91,9 @@ final class EventListener implements Listener
         }
     }
 
+    /**
+     * @priority HIGH
+     */
     public function onPlayerItemUse(PlayerItemUseEvent $event) : void
     {
         $player = $event->getPlayer();
@@ -90,6 +102,9 @@ final class EventListener implements Listener
         ItemManager::getItemIsRegistered($itemInHand)?->onUse($player);
     }
 
+    /**
+     * @priority HIGH
+     */
     public function onPlayerItemHeld(PlayerItemHeldEvent $event) : void
     {
         $player = $event->getPlayer();
@@ -98,6 +113,9 @@ final class EventListener implements Listener
         ItemManager::getItemIsRegistered($itemInHand)?->onHeld($player);
     }
 
+    /**
+     * @priority HIGH
+     */
     public function onPlayerMissSwing(PlayerMissSwingEvent $event) : void
     {
         $player = $event->getPlayer();
@@ -113,6 +131,7 @@ final class EventListener implements Listener
 
     /**
      * @throws Throwable
+     * @priority HIGH
      */
     public function onEntityDamage(EntityDamageEvent $event) : void
     {
@@ -226,6 +245,9 @@ final class EventListener implements Listener
         }
     }
 
+    /**
+     * @priority HIGH
+     */
     public function onEntityShootBow(EntityShootBowEvent $event) : void
     {
         $entity = $event->getEntity();
@@ -236,6 +258,9 @@ final class EventListener implements Listener
         }
     }
 
+    /**
+     * @priority HIGH
+     */
     public function onPlayerInteract(PlayerInteractEvent $event) : void
     {
         $player = $event->getPlayer();
@@ -253,6 +278,7 @@ final class EventListener implements Listener
 
     /**
      * @throws Throwable
+     * @priority HIGHEST
      */
     public function onDataPacketReceive(DataPacketReceiveEvent $event) : void
     {
@@ -277,6 +303,9 @@ final class EventListener implements Listener
         }
     }
 
+    /**
+     * @priority HIGH
+     */
     public function PlayerItemConsume(PlayerItemConsumeEvent $event) : void
     {
         $player = $event->getPlayer();
