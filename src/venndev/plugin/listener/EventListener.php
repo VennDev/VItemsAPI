@@ -126,7 +126,7 @@ final class EventListener implements Listener
                         $statsAttacker = new StatsManager($attacker);
 
                         // Recalculate the attack speed based on the default attack speed
-                        $statsAttacker->setStatHandler(StatsManager::DEFAULT_ATTACK_SPEED_TAG, $event->getAttackCooldown());
+                        //$statsAttacker->setStatHandler(StatsManager::DEFAULT_ATTACK_SPEED_TAG, $event->getAttackCooldown());
 
                         $event->setAttackCooldown((int) $statsAttacker->calculateAttackSpeed($event->getAttackCooldown()));
 
@@ -181,15 +181,15 @@ final class EventListener implements Listener
 
                                         $location = $entity->getLocation();
                                         $xTarget = $location->getX();
-                                        $yTarget = $location->getY();
+                                        $yTarget = $location->getY() + 1.5;
                                         $zTarget = $location->getZ();
 
                                         $angle = mt_rand(0, 360);
-                                        for ($i = -3; $i < 6; $i++) {
+                                        for ($i = -3; $i < 3; $i++) {
                                             $value = $i / 5;
 
-                                            $x = $xTarget + $value * cos(deg2rad($angle)) * 2;
-                                            $z = $zTarget + $value * sin(deg2rad($angle)) * 2;
+                                            $x = $xTarget - $value * cos(deg2rad($angle));
+                                            $z = $zTarget - $value * sin(deg2rad($angle));
                                             $y = $yTarget + $i / 2;
 
                                             $location->getWorld()->addParticle(new Vector3($x, $y, $z), self::getParticleFerocity());
