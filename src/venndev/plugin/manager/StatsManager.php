@@ -352,7 +352,8 @@ final class StatsManager
 
         // If the player has a negative attack speed, we will increase the attack speed
         if ($totalAttackSpeed >= 0) {
-            $playerEffect->get($effect) !== null ?? $playerEffect->get($effect)->setDuration(0);
+            $effectSwing = $playerEffect->get($effect);
+            $effectSwing?->decreaseDuration($effectSwing->getDuration());
             return $baseSpeed - ($baseSpeed /  (1 + min(self::MAX_BONUS_ATTACK_SPEED, $totalAttackSpeed)));
         }
 

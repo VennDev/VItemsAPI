@@ -4,6 +4,6 @@ main: venndev\plugin\VItemsAPI
 version: 1.0
 api: [5.0.0]
 author: VennDev
-description: One plugin for my friends for new year :))
+description: One plugin for PocketMine-MP that allows you to create custom items.
 load: STARTUP
 ...
