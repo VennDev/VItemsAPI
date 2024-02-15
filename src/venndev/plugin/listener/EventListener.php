@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace venndev\plugin\listener;
 
 use pocketmine\block\tile\Tile;
+use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\player\PlayerMissSwingEvent;
+use pocketmine\event\server\DataPacketSendEvent;
 use pocketmine\math\Vector3;
 use pocketmine\event\Listener;
 use pocketmine\event\block\BlockBreakEvent;
@@ -20,6 +22,9 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\network\mcpe\protocol\AnimatePacket;
+use pocketmine\network\mcpe\protocol\LevelEventPacket;
+use pocketmine\network\mcpe\protocol\types\LevelEvent;
 use venndev\plugin\event\DamageFerocityEvent;
 use venndev\plugin\item\BaseItem;
 use venndev\plugin\manager\ItemManager;
@@ -27,10 +32,13 @@ use venndev\plugin\manager\PluginSettings;
 use venndev\plugin\manager\ServerHandler;
 use venndev\plugin\manager\StatsManager;
 use venndev\plugin\manager\UtilManager;
+use venndev\plugin\player\VPlayer;
+use venndev\plugin\utils\BlockBreakHandler;
 use venndev\plugin\utils\ClickMode;
 use venndev\plugin\utils\ItemUtil;
 use venndev\plugin\utils\ParticlesAbility;
 use venndev\plugin\utils\StatsItem;
+use venndev\plugin\utils\StatsPlayer;
 use venndev\plugin\VItemsAPI;
 use pocketmine\player\Player;
 use venndev\plugin\world\particle\DamageDisplay;
@@ -42,6 +50,7 @@ use Throwable;
 final class EventListener implements Listener
 {
     use StatsItem;
+    use StatsPlayer;
     use ParticlesAbility;
 
     /**
@@ -52,6 +61,7 @@ final class EventListener implements Listener
         $player = $event->getPlayer();
         $statsManager = new StatsManager($player);
         $statsManager->setHasJoined(true);
+        $statsManager->checkStatsHandler();
     }
 
     /**
@@ -73,10 +83,12 @@ final class EventListener implements Listener
      */
     public function onBlockBreak(BlockBreakEvent $event) : void
     {
+        $block = $event->getBlock();
         $player = $event->getPlayer();
         $itemInHand = clone $player->getInventory()->getItemInHand();
+        $itemRegistered = ItemManager::getItemIsRegistered($itemInHand);
 
-        ItemManager::getItemIsRegistered($itemInHand)?->onBreakBlock($player);
+        $itemRegistered?->onBreakBlock($block, $player);
 
         $statsManager = new StatsManager($player);
         $drops = $event->getDrops();
@@ -213,7 +225,6 @@ final class EventListener implements Listener
 
                                             $location->getWorld()->addParticle(new Vector3($x, $y, $z), self::getParticleFerocity());
                                         }
-
                                     }, (int) ($i * PluginSettings::TIME_BETWEEN_FEROCITY_SPAWNS));
                                 }
 
@@ -238,9 +249,7 @@ final class EventListener implements Listener
                 $event->setBaseDamage($event->getBaseDamage() - ($trueDefense / ($trueDefense + 100)));
 
                 // Regen health based on EHP
-                $ehp = $statsEntity->calculateEHP();
-                $regenEvent = new EntityRegainHealthEvent($entity, $ehp, EntityRegainHealthEvent::CAUSE_CUSTOM);
-                $entity->heal($regenEvent);
+                $entity->heal(new EntityRegainHealthEvent($entity, $statsEntity->calculateEHP(), EntityRegainHealthEvent::CAUSE_CUSTOM));
             }
         }
     }
@@ -252,10 +261,7 @@ final class EventListener implements Listener
     {
         $entity = $event->getEntity();
 
-        if ($entity instanceof Player) {
-            $statsManager = new StatsManager($entity);
-            $event->setForce($event->getForce() + $statsManager->getTotalStat(self::ARROW_PIERCING));
-        }
+        if ($entity instanceof Player) $event->setForce($event->getForce() + (new StatsManager($entity))->getTotalStat(self::ARROW_PIERCING));
     }
 
     /**
@@ -264,6 +270,7 @@ final class EventListener implements Listener
     public function onPlayerInteract(PlayerInteractEvent $event) : void
     {
         $player = $event->getPlayer();
+        $block = $event->getBlock();
         $itemInHand = $player->getInventory()->getItemInHand();
         $action = $event->getAction();
 
@@ -273,7 +280,27 @@ final class EventListener implements Listener
             default => ClickMode::UNKNOWN
         };
 
-        ItemManager::getItemIsRegistered($itemInHand)?->onClickBlock($player, $clickMode);
+        ItemManager::getItemIsRegistered($itemInHand)?->onClickBlock($player, $block, $clickMode);
+    }
+
+    public function onDataPacketSend(DataPacketSendEvent $event) : void
+    {
+        $packets = $event->getPackets();
+        $targets = $event->getTargets();
+
+        foreach ($packets as $packet) {
+            foreach ($targets as $target) {
+                if (($player = $target->getPlayer()) !== null && $packet instanceof LevelEventPacket) {
+                    if ($packet->eventId === LevelEvent::PARTICLE_PUNCH_BLOCK) {
+                        $vPlayer = new VPlayer($player);
+                        $blockBreakHandler = $vPlayer->getBlockBreakHandler();
+
+                        if ($blockBreakHandler instanceof BlockBreakHandler) $vPlayer->attackVBlock($blockBreakHandler->getBlock()->getPosition()->asVector3());
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -306,7 +333,7 @@ final class EventListener implements Listener
     /**
      * @priority HIGH
      */
-    public function PlayerItemConsume(PlayerItemConsumeEvent $event) : void
+    public function onPlayerItemConsume(PlayerItemConsumeEvent $event) : void
     {
         $player = $event->getPlayer();
         $itemInHand = $event->getItem();

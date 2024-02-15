@@ -9,10 +9,12 @@ use pocketmine\utils\TextFormat;
 use venndev\plugin\item\BaseItem;
 use venndev\plugin\utils\ItemUtil;
 use venndev\plugin\utils\StatsItem;
+use venndev\plugin\utils\StatsPlayer;
 
 final class ItemManager
 {
     use StatsItem;
+    use StatsPlayer;
 
     private static array $items = [];
 
@@ -94,29 +96,11 @@ final class ItemManager
         if ($item instanceof Durable) $item->setUnbreakable($vitem->unbreakable());
 
         $item->getNamedTag()->setString(self::HEAD_TAG, $vitem->getRecipeName());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::DAMAGE, $vitem->getDamage());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::STRENGTH, $vitem->getStrength());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::DEFENSE, $vitem->getDefense());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::HEALTH, $vitem->getHealth());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::SPEED, $vitem->getSpeed());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::CRITICAL_CHANCE, $vitem->getCritChance());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::CRITICAL_DAMAGE, $vitem->getCritDamage());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::INTELLIGENCE, $vitem->getIntelligence());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::SEA_CREATURE_CHANCE, $vitem->getSeaCreatureChance());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::MAGIC_FIND, $vitem->getMagicFind());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::PET_LUCK, $vitem->getPetLuck());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::ABILITY_DAMAGE, $vitem->getAbilityDamage());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::MINING_FORTUNE, $vitem->getMiningFortune());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::MINING_SPEED, $vitem->getMiningSpeed());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::FISHING_SPEED, $vitem->getFishingSpeed());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::FISHING_LUCK, $vitem->getFishingLuck());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::FORAGING_FORTUNE, $vitem->getForagingFortune());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::FARMING_FORTUNE, $vitem->getFarmingFortune());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::ARROW_DAMAGE, $vitem->getArrowDamage());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::ARROW_PIERCING, $vitem->getArrowPiercing());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::FEROCITY, $vitem->getFerocity());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::TRUE_DEFENSE, $vitem->getTrueDefense());
-        $item->getNamedTag()->setFloat(self::HEAD_TAG . self::BONUS_ATTACK_SPEED, $vitem->getBonusAttackSpeed());
+
+        $tagList = $vitem->getTagList();
+
+        // This is for all tags stats for the item
+        foreach ($tagList as $tagName => $value) $item->getNamedTag()->setFloat(self::HEAD_TAG . $tagName, $value);
 
         $player->getInventory()->addItem($item);
         return true;

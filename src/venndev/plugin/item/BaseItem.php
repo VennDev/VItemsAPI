@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace venndev\plugin\item;
 
+use pocketmine\block\Block;
 use pocketmine\entity\Entity;
 use pocketmine\utils\TextFormat;
 use venndev\plugin\utils\ClickMode;
+use venndev\plugin\utils\StatsItem;
 
 abstract class BaseItem
 {
+    use StatsItem;
 
     abstract public function getName() : string;
 
@@ -166,7 +169,7 @@ abstract class BaseItem
     /**
      * This is method is called when the item is used on a block
      */
-    public function onClickBlock(Entity $owner, ClickMode $mode) : void
+    public function onClickBlock(Entity $owner, Block $block, ClickMode $mode) : void
     {
         //TODO: Implement
     }
@@ -174,7 +177,7 @@ abstract class BaseItem
     /**
      * This is method is called when the item is used to break a block
      */
-    public function onBreakBlock(Entity $owner) : void
+    public function onBreakBlock(Block $block, Entity $owner) : void
     {
         //TODO: Implement
     }
@@ -236,6 +239,35 @@ abstract class BaseItem
         if ($this->getPetLuck() != 0) $loreStats[] = TextFormat::GRAY . "Pet Luck: " . TextFormat::LIGHT_PURPLE . $this->getPetLuck();
 
         return $loreStats;
+    }
+
+    public function getTagList() : array
+    {
+        return [
+            self::DAMAGE => $this->getDamage(),
+            self::STRENGTH => $this->getStrength(),
+            self::DEFENSE => $this->getDefense(),
+            self::HEALTH => $this->getHealth(),
+            self::SPEED => $this->getSpeed(),
+            self::CRITICAL_CHANCE => $this->getCritChance(),
+            self::CRITICAL_DAMAGE => $this->getCritDamage(),
+            self::INTELLIGENCE => $this->getIntelligence(),
+            self::SEA_CREATURE_CHANCE => $this->getSeaCreatureChance(),
+            self::MAGIC_FIND => $this->getMagicFind(),
+            self::PET_LUCK => $this->getPetLuck(),
+            self::ABILITY_DAMAGE => $this->getAbilityDamage(),
+            self::MINING_FORTUNE => $this->getMiningFortune(),
+            self::MINING_SPEED => $this->getMiningSpeed(),
+            self::FISHING_SPEED => $this->getFishingSpeed(),
+            self::FISHING_LUCK => $this->getFishingLuck(),
+            self::FORAGING_FORTUNE => $this->getForagingFortune(),
+            self::FARMING_FORTUNE => $this->getFarmingFortune(),
+            self::ARROW_DAMAGE => $this->getArrowDamage(),
+            self::ARROW_PIERCING => $this->getArrowPiercing(),
+            self::FEROCITY => $this->getFerocity(),
+            self::TRUE_DEFENSE => $this->getTrueDefense(),
+            self::BONUS_ATTACK_SPEED => $this->getBonusAttackSpeed()
+        ];
     }
 
 }

@@ -30,7 +30,6 @@ trait StatsItem
     public const string ABILITY_DAMAGE = "ability_damage";
     public const string ARROW_DAMAGE = "arrow_damage";
     public const string ARROW_PIERCING = "arrow_piercing";
-    public const string CROP_FORTUNE = "crop_fortune";
 
     // Maybe this is for physical damage?
     public const string FEROCITY = "ferocity";

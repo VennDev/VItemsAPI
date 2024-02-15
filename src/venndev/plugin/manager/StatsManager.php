@@ -9,12 +9,14 @@ use pocketmine\item\Item;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 use venndev\plugin\utils\StatsItem;
+use venndev\plugin\utils\StatsPlayer;
 use venndev\plugin\VItemsAPI;
 use vennv\vapm\Promise;
 
 final class StatsManager
 {
     use StatsItem;
+    use StatsPlayer;
 
     public const int BASIC_HEALTH = 20;
     public const float BASIC_SPEED = 0.13;
@@ -360,6 +362,11 @@ final class StatsManager
         $playerEffect->get($effect) !== null ? $playerEffect->get($effect)->setAmplifier($lvlEffect) : $playerEffect->add($effectInstance);
 
         return $baseSpeed + ($baseSpeed * abs($totalAttackSpeed) / 100);
+    }
+
+    public function calculateMiningSpeed() : float
+    {
+        return $this->getTotalStat(self::MINING_SPEED) / 100;
     }
 
 }
