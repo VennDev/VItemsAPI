@@ -283,6 +283,9 @@ final class EventListener implements Listener
         ItemManager::getItemIsRegistered($itemInHand)?->onClickBlock($player, $block, $clickMode);
     }
 
+    /**
+     * @priority HIGH
+     */
     public function onDataPacketSend(DataPacketSendEvent $event) : void
     {
         $packets = $event->getPackets();
