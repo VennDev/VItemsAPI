@@ -13,6 +13,7 @@ use pocketmine\player\Player;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\particle\BlockBreakParticle;
 use pocketmine\world\sound\BlockBreakSound;
+use Throwable;
 use venndev\plugin\item\Tool;
 use venndev\plugin\manager\ItemManager;
 use venndev\plugin\manager\UtilManager;
@@ -129,7 +130,7 @@ class VPlayer
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function attackVBlock(Vector3 $pos) : bool
     {
