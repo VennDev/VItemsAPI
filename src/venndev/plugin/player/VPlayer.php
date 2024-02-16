@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace venndev\plugin\player;
 
+use Throwable;
 use pocketmine\block\Air;
 use pocketmine\block\Block;
 use pocketmine\event\block\BlockBreakEvent;
@@ -13,8 +14,7 @@ use pocketmine\player\Player;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\particle\BlockBreakParticle;
 use pocketmine\world\sound\BlockBreakSound;
-use Throwable;
-use venndev\plugin\item\Tool;
+use venndev\plugin\item\tools\Pickaxe;
 use venndev\plugin\manager\ItemManager;
 use venndev\plugin\manager\UtilManager;
 use venndev\plugin\utils\BlockBreakHandler;
@@ -54,7 +54,7 @@ class VPlayer
         $item = $this->player->getInventory()->getItemInHand();
         $vitem = ItemManager::getItemIsRegistered($item);
 
-        if (!$vitem instanceof Tool) return false;
+        if (!$vitem instanceof Pickaxe) return false;
 
         $tool = UtilManager::getItemToolType($vitem);
 
@@ -140,7 +140,7 @@ class VPlayer
         $item = $this->player->getInventory()->getItemInHand();
         $vitem = ItemManager::getItemIsRegistered($item);
 
-        if (!$vitem instanceof Tool) return false;
+        if (!$vitem instanceof Pickaxe) return false;
 
         if ($this->getBlockBreakHandler() === null) $this->setBlockBreakHandler(new BlockBreakHandler($this->player, $block));
 
