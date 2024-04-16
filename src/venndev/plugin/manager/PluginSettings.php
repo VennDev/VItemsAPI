@@ -7,10 +7,10 @@ namespace venndev\plugin\manager;
 final class PluginSettings
 {
 
-    public const float TIME_BETWEEN_FEROCITY_SPAWNS = 200.0;
-    public const float TIME_TO_FEROCITY_RESET = 30.0;
-    public const float TIME_TO_FEROCITY_RESET_IF_LAG = 50.0;
-    public const float TIME_TO_REMOVE_DAMAGE_DISPLAY = 1000.0;
+    public const TIME_BETWEEN_FEROCITY_SPAWNS = 200.0;
+    public const TIME_TO_FEROCITY_RESET = 30.0;
+    public const TIME_TO_FEROCITY_RESET_IF_LAG = 50.0;
+    public const TIME_TO_REMOVE_DAMAGE_DISPLAY = 1000.0;
 
     /**
      * This it can be used to reduce lag by disabling some features.
