@@ -6,3 +6,6 @@
 
 # Example Plugin
 - [Click Here](https://github.com/VennDev/Example-ItemsAPI)
+
+# Error
+`All errors have been fixed`
