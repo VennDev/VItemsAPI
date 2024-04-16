@@ -19,8 +19,8 @@ use venndev\plugin\utils\ClickMode;
 class Tool extends BaseItem
 {
 
-    public const int MAX_REACH_DISTANCE_SURVIVAL = 7;
-    public const int MAX_REACH_DISTANCE_CREATIVE = 7;
+    public const MAX_REACH_DISTANCE_SURVIVAL = 7;
+    public const MAX_REACH_DISTANCE_CREATIVE = 7;
 
     public function getType() : int
     {
