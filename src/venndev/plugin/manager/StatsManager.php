@@ -18,14 +18,14 @@ final class StatsManager
     use StatsItem;
     use StatsPlayer;
 
-    public const int BASIC_HEALTH = 20;
-    public const float BASIC_SPEED = 0.13;
-    public const float BASIC_MANA_REGEN = 0.5;
-    public const float MAX_FORTUNE = 600;
-    public const float MAX_BONUS_ATTACK_SPEED = 100;
-    public const float DEFAULT_ATTACK_SPEED = 10;
+    public const BASIC_HEALTH = 20;
+    public const BASIC_SPEED = 0.13;
+    public const BASIC_MANA_REGEN = 0.5;
+    public const MAX_FORTUNE = 600;
+    public const MAX_BONUS_ATTACK_SPEED = 100;
+    public const DEFAULT_ATTACK_SPEED = 10;
 
-    public const string DEFAULT_ATTACK_SPEED_TAG = "default_attack_speed";
+    public const DEFAULT_ATTACK_SPEED_TAG = "default_attack_speed";
 
     private static array $baseStats = [
         self::DAMAGE => 0,
