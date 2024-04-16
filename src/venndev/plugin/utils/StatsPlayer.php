@@ -8,6 +8,6 @@ trait StatsPlayer
 {
 
     // Maybe it make for stats of player without item?
-    public const string CROP_FORTUNE = "crop_fortune";
+    public const CROP_FORTUNE = "crop_fortune";
 
 }
