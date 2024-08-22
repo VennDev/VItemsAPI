@@ -7,6 +7,6 @@ projects:
     path: ""
     libs:
       - src: VennDev/LibVapmPMMP/LibVapmPMMP
-        version: ^2.3.5
+        version: ^2.4.0
         branch: "main"
 ...
